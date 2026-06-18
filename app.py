@@ -16,7 +16,39 @@ from utils.database import create_table, get_predictions, save_prediction
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "models" / "model.pkl"
 VECTORIZER_PATH = BASE_DIR / "models" / "vectorizer.pkl"
-LOGO_PATH = BASE_DIR / "assets" / "fake-news-logo.svg"
+LOGO_SVG = """
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"
+     role="img" aria-label="AI Fake News Detector logo">
+  <defs>
+    <linearGradient id="shield" x1="38" y1="24" x2="214" y2="230"
+                    gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#0891B2"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="80" y1="68" x2="166" y2="180"
+                    gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#CBD5E1"/>
+    </linearGradient>
+  </defs>
+  <path d="M128 18 218 52v62c0 57-36 102-90 124-54-22-90-67-90-124V52l90-34Z"
+        fill="url(#shield)"/>
+  <path d="M128 35 201 62v52c0 46-27 83-73 104-46-21-73-58-73-104V62l73-27Z"
+        fill="#0F172A" opacity=".88"/>
+  <rect x="75" y="65" width="91" height="119" rx="10"
+        fill="url(#paper)"/>
+  <rect x="91" y="84" width="58" height="11" rx="5.5" fill="#475569"/>
+  <rect x="91" y="106" width="42" height="8" rx="4" fill="#94A3B8"/>
+  <rect x="91" y="123" width="58" height="8" rx="4" fill="#94A3B8"/>
+  <rect x="91" y="140" width="46" height="8" rx="4" fill="#94A3B8"/>
+  <circle cx="163" cy="164" r="36" fill="#F59E0B"/>
+  <circle cx="163" cy="164" r="25" fill="#172033"/>
+  <path d="m151 164 8 8 17-19" fill="none" stroke="#67E8F9"
+        stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m188 189 23 23" stroke="#F59E0B" stroke-width="12"
+        stroke-linecap="round"/>
+</svg>
+"""
 
 
 st.set_page_config(
@@ -175,15 +207,9 @@ st.markdown(
 )
 
 
-@st.cache_data
-def load_logo_svg() -> str:
-    """Load the logo as inline SVG for reliable Streamlit Cloud rendering."""
-    return LOGO_PATH.read_text(encoding="utf-8")
-
-
 def display_logo(css_class: str) -> None:
-    """Render the SVG without using Streamlit's media-file conversion."""
-    logo_svg = load_logo_svg().replace(
+    """Render the embedded logo without Streamlit media-file conversion."""
+    logo_svg = LOGO_SVG.replace(
         "<svg ",
         f'<svg class="app-logo {css_class}" ',
         1,

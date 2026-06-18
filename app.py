@@ -16,13 +16,147 @@ from utils.database import create_table, get_predictions, save_prediction
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "models" / "model.pkl"
 VECTORIZER_PATH = BASE_DIR / "models" / "vectorizer.pkl"
+LOGO_PATH = BASE_DIR / "assets" / "fake-news-logo.svg"
 
 
 st.set_page_config(
     page_title="AI Fake News Detector",
-    page_icon="📰",
+    page_icon=str(LOGO_PATH),
     layout="wide",
     initial_sidebar_state="expanded",
+)
+
+
+st.markdown(
+    """
+    <style>
+    :root {
+        --app-bg: #0b1120;
+        --panel: #111a2e;
+        --panel-soft: #172033;
+        --border: #263552;
+        --text: #e8eefc;
+        --muted: #9aa9c2;
+        --accent: #6d7cff;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(circle at 85% 8%, rgba(79, 70, 229, .16), transparent 28rem),
+            radial-gradient(circle at 15% 85%, rgba(8, 145, 178, .10), transparent 30rem),
+            var(--app-bg);
+        color: var(--text);
+    }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #10182a 0%, #0d1424 100%);
+        border-right: 1px solid var(--border);
+    }
+
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] li,
+    [data-testid="stSidebar"] strong,
+    [data-testid="stSidebar"] span {
+        color: var(--text) !important;
+    }
+
+    [data-testid="stSidebarNav"] a {
+        color: var(--text) !important;
+        border-radius: 9px;
+    }
+
+    [data-testid="stSidebarNav"] a:hover {
+        background: #202b48;
+    }
+
+    [data-testid="stHeader"] {
+        background: rgba(11, 17, 32, .75);
+    }
+
+    h1, h2, h3, p, label {
+        color: var(--text);
+    }
+
+    [data-testid="stCaptionContainer"] {
+        color: var(--muted);
+    }
+
+    [data-testid="stMetric"],
+    [data-testid="stForm"],
+    [data-testid="stDataFrame"] {
+        background: rgba(17, 26, 46, .82);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, .16);
+    }
+
+    .stTextInput input, .stTextArea textarea {
+        color: var(--text);
+        background: var(--panel-soft);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+    }
+
+    .stTextInput input:focus, .stTextArea textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .stTextInput input::placeholder, .stTextArea textarea::placeholder {
+        color: #7787a3;
+        opacity: 1;
+    }
+
+    .stButton > button, .stDownloadButton > button,
+    [data-testid="stFormSubmitButton"] > button {
+        color: white;
+        background: linear-gradient(90deg, var(--accent), #4f46e5);
+        border: 0;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .stButton > button:hover, .stDownloadButton > button:hover,
+    [data-testid="stFormSubmitButton"] > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px rgba(79, 70, 229, .32);
+    }
+
+    .stTabs [data-baseweb="tab-list"] {
+        gap: .5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        color: var(--muted);
+        background: var(--panel);
+        border-radius: 10px 10px 0 0;
+        padding: .65rem 1rem;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: white !important;
+        background: #202b48 !important;
+    }
+
+    hr {
+        border-color: var(--border) !important;
+    }
+
+    .app-subtitle {
+        color: var(--muted);
+        font-size: 1.05rem;
+        margin-top: -.6rem;
+        margin-bottom: 1.4rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 
@@ -110,7 +244,8 @@ except Exception as error:
 
 
 with st.sidebar:
-    st.title("📰 Fake News Detector")
+    st.image(str(LOGO_PATH), width=112)
+    st.title("Fake News Detector")
     st.caption("Machine-learning assisted news classification")
     st.divider()
     st.markdown(
@@ -135,11 +270,16 @@ with st.sidebar:
     )
 
 
-st.title("📰 AI Fake News Detector")
-st.write(
-    "Paste a news article below to estimate whether its writing resembles "
-    "real or fake news in the training dataset."
-)
+title_col, logo_col = st.columns([8, 1])
+with title_col:
+    st.title("AI Fake News Detector")
+    st.markdown(
+        '<p class="app-subtitle">Paste a news article to estimate whether its '
+        "writing resembles real or fake news in the training dataset.</p>",
+        unsafe_allow_html=True,
+    )
+with logo_col:
+    st.image(str(LOGO_PATH), width=88)
 
 predict_tab, history_tab = st.tabs(["🔍 Check News", "🕘 Recent History"])
 

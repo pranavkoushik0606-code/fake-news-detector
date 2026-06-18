@@ -21,7 +21,7 @@ LOGO_PATH = BASE_DIR / "assets" / "fake-news-logo.svg"
 
 st.set_page_config(
     page_title="AI Fake News Detector",
-    page_icon=str(LOGO_PATH),
+    page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -154,10 +154,41 @@ st.markdown(
         margin-top: -.6rem;
         margin-bottom: 1.4rem;
     }
+
+    .app-logo {
+        display: block;
+        height: auto;
+    }
+
+    .sidebar-logo {
+        width: 112px;
+        margin: .5rem 0 1.4rem;
+    }
+
+    .header-logo {
+        width: 88px;
+        margin-left: auto;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+
+@st.cache_data
+def load_logo_svg() -> str:
+    """Load the logo as inline SVG for reliable Streamlit Cloud rendering."""
+    return LOGO_PATH.read_text(encoding="utf-8")
+
+
+def display_logo(css_class: str) -> None:
+    """Render the SVG without using Streamlit's media-file conversion."""
+    logo_svg = load_logo_svg().replace(
+        "<svg ",
+        f'<svg class="app-logo {css_class}" ',
+        1,
+    )
+    st.markdown(logo_svg, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -244,7 +275,7 @@ except Exception as error:
 
 
 with st.sidebar:
-    st.image(str(LOGO_PATH), width=112)
+    display_logo("sidebar-logo")
     st.title("Fake News Detector")
     st.caption("Machine-learning assisted news classification")
     st.divider()
@@ -279,7 +310,7 @@ with title_col:
         unsafe_allow_html=True,
     )
 with logo_col:
-    st.image(str(LOGO_PATH), width=88)
+    display_logo("header-logo")
 
 predict_tab, history_tab = st.tabs(["🔍 Check News", "🕘 Recent History"])
 
